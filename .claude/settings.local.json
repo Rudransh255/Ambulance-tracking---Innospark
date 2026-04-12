@@ -12,7 +12,8 @@
       "Bash(powershell -Command 'Get-ChildItem -Recurse '\\\\''C:\\\\Users\\\\Rudransh Singh\\\\Downloads\\\\CR'\\\\'' -Exclude node_modules,dist,.git,.claude | Where-Object {!$_.PSIsContainer} | Sort-Object LastWriteTime -Descending | Select-Object -First 15 FullName,LastWriteTime | Format-Table -AutoSize')",
       "Bash(powershell -NoProfile -Command 'Get-ChildItem -Recurse '\\\\''C:\\\\Users\\\\Rudransh Singh\\\\Downloads\\\\CR'\\\\'' -Exclude node_modules,dist,.git | Where-Object { -not $_.PSIsContainer -and $_.FullName -notmatch '\\\\''node_modules|dist|\\\\.git|\\\\.claude'\\\\'' } | Sort-Object LastWriteTime -Descending | Select-Object -First 15 | ForEach-Object { $_.LastWriteTime.ToString\\('\\\\''HH:mm:ss'\\\\''\\) + '\\\\''  '\\\\'' + $_.FullName }')",
       "Bash(kill %1)",
-      "Bash(node -e \"console.log\\('JWT_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\); console.log\\('JWT_REFRESH_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")"
+      "Bash(node -e \"console.log\\('JWT_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\); console.log\\('JWT_REFRESH_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")",
+      "Bash(git rm:*)"
     ]
   }
 }
