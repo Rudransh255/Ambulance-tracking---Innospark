@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F1F5F9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-md font-semibold text-sm
+           hover:bg-primary-600 transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white px-4 py-2 rounded-md font-semibold text-sm
+           hover:bg-secondary-600 transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:ring-offset-2;
+  }
+
+  .btn-emergency {
+    @apply bg-emergency text-white px-4 py-2 rounded-md font-semibold text-sm
+           hover:bg-red-700 transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply border border-clinical-border text-text-primary px-4 py-2 rounded-md font-semibold text-sm
+           hover:bg-clinical-alt transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-level-1 border border-clinical-border p-6;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 rounded-md border border-clinical-border text-sm
+           placeholder:text-text-muted
+           focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary
+           transition-colors duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium
+           text-text-secondary hover:bg-clinical-alt hover:text-text-primary
+           transition-colors duration-200;
+  }
+
+  .sidebar-link.active {
+    @apply bg-primary-50 text-primary font-semibold;
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  border-radius: 8px;
+}
+
+/* Pulsing animation for SOS and active ambulances */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}

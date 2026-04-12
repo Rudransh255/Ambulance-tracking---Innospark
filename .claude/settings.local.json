@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(node -e \"require\\('./index.js'\\)\")",
+      "Bash(curl -s http://localhost:3001/api/health)",
+      "Bash(curl -s -X POST http://localhost:3001/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"patient@demo.com\",\"password\":\"password123\"}')",
+      "Bash(node -e \"process.stdin.on\\('data',d=>{const j=JSON.parse\\(d\\);console.log\\(j.length+' ambulances'\\)}\\)\")",
+      "Bash(npx kill-port:*)",
+      "Bash(pkill -f \"node.*index.js\")",
+      "Bash(npx vite:*)",
+      "Bash(powershell -Command 'Get-ChildItem -Recurse '\\\\''C:\\\\Users\\\\Rudransh Singh\\\\Downloads\\\\CR'\\\\'' -Exclude node_modules,dist,.git,.claude | Where-Object {!$_.PSIsContainer} | Sort-Object LastWriteTime -Descending | Select-Object -First 15 FullName,LastWriteTime | Format-Table -AutoSize')",
+      "Bash(powershell -NoProfile -Command 'Get-ChildItem -Recurse '\\\\''C:\\\\Users\\\\Rudransh Singh\\\\Downloads\\\\CR'\\\\'' -Exclude node_modules,dist,.git | Where-Object { -not $_.PSIsContainer -and $_.FullName -notmatch '\\\\''node_modules|dist|\\\\.git|\\\\.claude'\\\\'' } | Sort-Object LastWriteTime -Descending | Select-Object -First 15 | ForEach-Object { $_.LastWriteTime.ToString\\('\\\\''HH:mm:ss'\\\\''\\) + '\\\\''  '\\\\'' + $_.FullName }')",
+      "Bash(kill %1)",
+      "Bash(node -e \"console.log\\('JWT_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\); console.log\\('JWT_REFRESH_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")"
+    ]
+  }
+}
