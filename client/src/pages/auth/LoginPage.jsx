@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { login, register: registerUser, user } = useAuthStore();
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm();
 
   if (user) return <Navigate to="/dashboard" replace />;
 
@@ -168,16 +168,46 @@ export default function LoginPage() {
           </form>
 
           {isLogin && (
-            <div className="px-6 pb-6">
-              <div className="bg-clinical-alt dark:bg-slate-700/50 rounded-lg p-3">
-                <p className="text-xs font-medium text-text-secondary dark:text-slate-300 mb-2">Demo Accounts (password: password123)</p>
-                <div className="grid grid-cols-2 gap-1 text-xs text-text-muted dark:text-slate-400">
-                  <span>patient@demo.com</span><span>Patient</span>
-                  <span>donor@demo.com</span><span>Blood Donor</span>
-                  <span>hospital@demo.com</span><span>Hospital Admin</span>
-                  <span>ambulance@demo.com</span><span>Ambulance Crew</span>
-                  <span>traffic@demo.com</span><span>Traffic Police</span>
+            <div className="px-6 pb-6 space-y-3">
+              {/* Demo accounts */}
+              <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold text-primary dark:text-primary-300 uppercase tracking-wide">Demo Accounts</p>
+                  <span className="text-[10px] font-semibold bg-primary text-white px-2 py-0.5 rounded-full">password: password123</span>
                 </div>
+                <div className="space-y-1">
+                  {[
+                    { email: 'patient@demo.com', role: 'Patient' },
+                    { email: 'donor@demo.com', role: 'Blood Donor' },
+                    { email: 'hospital@demo.com', role: 'Hospital Admin' },
+                    { email: 'ambulance@demo.com', role: 'Ambulance Crew' },
+                    { email: 'traffic@demo.com', role: 'Traffic Police' },
+                  ].map(({ email, role }) => (
+                    <button
+                      key={email}
+                      type="button"
+                      onClick={() => {
+                        setValue('email', email);
+                        setValue('password', 'password123');
+                      }}
+                      className="w-full flex items-center justify-between px-2 py-1.5 rounded-md
+                        bg-white dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-900/30
+                        border border-clinical-border dark:border-slate-600 hover:border-primary dark:hover:border-primary-500
+                        transition-colors group cursor-pointer"
+                    >
+                      <span className="text-xs font-medium text-text-primary dark:text-slate-200 group-hover:text-primary dark:group-hover:text-primary-300">{email}</span>
+                      <span className="text-[10px] font-semibold text-text-muted dark:text-slate-400 bg-clinical-alt dark:bg-slate-700 px-1.5 py-0.5 rounded">{role}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 flex gap-2">
+                <span className="text-amber-500 text-sm mt-0.5">💡</span>
+                <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                  <span className="font-bold">Tip:</span> To explore the full site, log in with each account — every role has a unique dashboard with different features.
+                </p>
               </div>
             </div>
           )}

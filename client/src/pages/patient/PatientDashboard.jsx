@@ -71,9 +71,14 @@ export default function PatientDashboard() {
       setActiveEmergency(result);
       setShowSosModal(false);
       setSosStatus(`Ambulance ${result.ambulance.vehicle_number} dispatched! ETA: ${result.eta_minutes} min`);
+      setTimeout(() => setSosStatus(''), 8000);
     } catch (err) {
-      setSosStatus('ERROR: ' + (err.message || 'SOS request failed'));
+      const msg = err.message === 'Failed to fetch'
+        ? 'Cannot connect to server. Please try again.'
+        : (err.message || 'SOS request failed');
+      setSosStatus('ERROR: ' + msg);
       setShowSosModal(false);
+      setTimeout(() => setSosStatus(''), 6000);
     } finally {
       setSosLoading(false);
     }
@@ -85,8 +90,8 @@ export default function PatientDashboard() {
   return (
     <div className="space-y-6 max-w-[1280px] mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">Welcome, {user?.full_name}</h1>
-        <p className="text-sm text-text-secondary mt-1">Emergency services at your fingertips</p>
+        <h1 className="text-2xl font-bold text-text-primary dark:text-slate-100">Welcome, {user?.full_name}</h1>
+        <p className="text-sm text-text-secondary dark:text-slate-400 mt-1">Emergency services at your fingertips</p>
       </div>
 
       {/* SOS Button */}
@@ -106,7 +111,7 @@ export default function PatientDashboard() {
 
       {/* SOS Status */}
       {sosStatus && (
-        <div className={`p-4 rounded-lg text-center font-semibold text-lg ${sosStatus.startsWith('ERROR') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+        <div className={`p-4 rounded-lg text-center font-semibold text-lg ${sosStatus.startsWith('ERROR') ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'}`}>
           {sosStatus}
         </div>
       )}
@@ -205,18 +210,18 @@ export default function PatientDashboard() {
       {/* SOS Confirmation Modal */}
       {showSosModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 text-center">
-            <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-              <Phone size={32} className="text-red-600" />
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-md mx-4 text-center border border-transparent dark:border-slate-600 shadow-level-3">
+            <div className="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
+              <Phone size={32} className="text-red-600 dark:text-red-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Request Emergency Ambulance?</h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-text-primary dark:text-slate-100">Request Emergency Ambulance?</h3>
+            <p className="text-sm text-text-secondary dark:text-slate-400 mb-6">
               The nearest available ambulance will be dispatched to your location immediately.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowSosModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border border-clinical-border dark:border-slate-600 rounded-md text-sm font-medium text-text-primary dark:text-slate-200 hover:bg-clinical-alt dark:hover:bg-slate-700"
               >
                 Cancel
               </button>
