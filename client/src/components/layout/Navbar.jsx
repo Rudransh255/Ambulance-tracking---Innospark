@@ -1,9 +1,11 @@
-import { Bell, LogOut, User, Menu } from 'lucide-react';
+import { Bell, LogOut, User, Menu, Sun, Moon } from 'lucide-react';
 import { useState } from 'react';
 import useAuthStore from '../../stores/authStore';
+import useThemeStore from '../../stores/themeStore';
 
 export default function Navbar({ onMenuToggle }) {
   const { user, logout } = useAuthStore();
+  const { isDark, toggleTheme } = useThemeStore();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const roleLabels = {
@@ -15,11 +17,11 @@ export default function Navbar({ onMenuToggle }) {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-clinical-border flex items-center justify-between px-4 lg:px-6 z-30">
+    <header className="h-16 bg-white dark:bg-slate-900 border-b border-clinical-border dark:border-slate-700 flex items-center justify-between px-4 lg:px-6 z-30">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 rounded-md hover:bg-clinical-alt transition-colors"
+          className="lg:hidden p-2 rounded-md hover:bg-clinical-alt dark:hover:bg-slate-700 transition-colors"
           aria-label="Toggle menu"
         >
           <Menu size={20} />
@@ -30,12 +32,20 @@ export default function Navbar({ onMenuToggle }) {
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           </div>
-          <span className="text-lg font-bold text-primary hidden sm:block">LifePulse</span>
+          <span className="text-lg font-bold text-primary dark:text-primary-300 hidden sm:block">LifePulse</span>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <button className="relative p-2 rounded-md hover:bg-clinical-alt transition-colors" aria-label="Notifications">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-md hover:bg-clinical-alt dark:hover:bg-slate-700 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-text-secondary" />}
+        </button>
+
+        <button className="relative p-2 rounded-md hover:bg-clinical-alt dark:hover:bg-slate-700 transition-colors" aria-label="Notifications">
           <Bell size={20} className="text-text-secondary" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-emergency rounded-full" />
         </button>
@@ -43,26 +53,26 @@ export default function Navbar({ onMenuToggle }) {
         <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-clinical-alt transition-colors"
+            className="flex items-center gap-2 p-2 rounded-md hover:bg-clinical-alt dark:hover:bg-slate-700 transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
               <User size={16} className="text-primary" />
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-sm font-medium text-text-primary">{user?.full_name}</p>
-              <p className="text-xs text-text-muted">{roleLabels[user?.role]}</p>
+              <p className="text-sm font-medium text-text-primary dark:text-slate-100">{user?.full_name}</p>
+              <p className="text-xs text-text-muted dark:text-slate-400">{roleLabels[user?.role]}</p>
             </div>
           </button>
 
           {showDropdown && (
-            <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-level-2 border border-clinical-border py-1 z-50">
-              <div className="px-4 py-2 border-b border-clinical-border">
-                <p className="text-sm font-medium">{user?.full_name}</p>
-                <p className="text-xs text-text-muted">{user?.email}</p>
+            <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-level-2 border border-clinical-border dark:border-slate-700 py-1 z-50">
+              <div className="px-4 py-2 border-b border-clinical-border dark:border-slate-700">
+                <p className="text-sm font-medium dark:text-slate-100">{user?.full_name}</p>
+                <p className="text-xs text-text-muted dark:text-slate-400">{user?.email}</p>
               </div>
               <button
                 onClick={logout}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
                 <LogOut size={16} />
                 Sign Out

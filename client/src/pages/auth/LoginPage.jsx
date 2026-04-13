@@ -56,11 +56,11 @@ export default function LoginPage() {
 
         <div className="card p-0 overflow-hidden">
           {/* Tab Toggle */}
-          <div className="flex border-b border-clinical-border">
+          <div className="flex border-b border-clinical-border dark:border-slate-700">
             <button
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-                isLogin ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-secondary'
+                isLogin ? 'text-primary dark:text-primary-300 border-b-2 border-primary' : 'text-text-muted hover:text-text-secondary'
               }`}
             >
               Login
@@ -68,7 +68,7 @@ export default function LoginPage() {
             <button
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-                !isLogin ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-secondary'
+                !isLogin ? 'text-primary dark:text-primary-300 border-b-2 border-primary' : 'text-text-muted hover:text-text-secondary'
               }`}
             >
               Register
@@ -78,7 +78,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
             {!isLogin && (
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Full Name</label>
+                <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Full Name</label>
                 <input
                   {...register('full_name', { required: !isLogin && 'Name is required' })}
                   className="input-field"
@@ -89,7 +89,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Email</label>
+              <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Email</label>
               <input
                 {...register('email', { required: 'Email is required' })}
                 type="email"
@@ -101,7 +101,7 @@ export default function LoginPage() {
 
             {!isLogin && (
               <div>
-                <label className="block text-xs font-medium text-text-secondary mb-1">Phone</label>
+                <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Phone</label>
                 <input
                   {...register('phone')}
                   type="tel"
@@ -112,7 +112,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Password</label>
+              <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Password</label>
               <div className="relative">
                 <input
                   {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Minimum 6 characters' } })}
@@ -134,7 +134,7 @@ export default function LoginPage() {
             {!isLogin && (
               <>
                 <div>
-                  <label className="block text-xs font-medium text-text-secondary mb-1">Role</label>
+                  <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Role</label>
                   <select {...register('role', { required: !isLogin && 'Role is required' })} className="input-field">
                     <option value="">Select your role</option>
                     {ROLES.map((r) => (
@@ -146,7 +146,7 @@ export default function LoginPage() {
 
                 {(selectedRole === 'donor' || selectedRole === 'patient') && (
                   <div>
-                    <label className="block text-xs font-medium text-text-secondary mb-1">Blood Group</label>
+                    <label className="block text-xs font-medium text-text-secondary dark:text-slate-300 mb-1">Blood Group</label>
                     <select {...register('blood_group')} className="input-field">
                       <option value="">Select blood group</option>
                       {BLOOD_GROUPS.map((bg) => (
@@ -169,9 +169,9 @@ export default function LoginPage() {
 
           {isLogin && (
             <div className="px-6 pb-6">
-              <div className="bg-clinical-alt rounded-lg p-3">
-                <p className="text-xs font-medium text-text-secondary mb-2">Demo Accounts (password: password123)</p>
-                <div className="grid grid-cols-2 gap-1 text-xs text-text-muted">
+              <div className="bg-clinical-alt dark:bg-slate-700/50 rounded-lg p-3">
+                <p className="text-xs font-medium text-text-secondary dark:text-slate-300 mb-2">Demo Accounts (password: password123)</p>
+                <div className="grid grid-cols-2 gap-1 text-xs text-text-muted dark:text-slate-400">
                   <span>patient@demo.com</span><span>Patient</span>
                   <span>donor@demo.com</span><span>Blood Donor</span>
                   <span>hospital@demo.com</span><span>Hospital Admin</span>

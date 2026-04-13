@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
+import useThemeStore from './stores/themeStore';
 import DashboardLayout from './components/layout/DashboardLayout';
 import LoginPage from './pages/auth/LoginPage';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -58,9 +59,11 @@ function DashboardRedirect() {
 
 export default function App() {
   const { checkAuth, isLoading } = useAuthStore();
+  const { initTheme } = useThemeStore();
 
   useEffect(() => {
     checkAuth();
+    initTheme();
   }, []);
 
   if (isLoading) {

@@ -56,14 +56,14 @@ export default function Sidebar({ isOpen, onClose }) {
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-[260px] bg-white border-r border-clinical-border
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-[260px] bg-white dark:bg-slate-900 border-r border-clinical-border dark:border-slate-700
           transform transition-transform duration-200 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           flex flex-col`}
       >
         <div className="flex items-center justify-between p-4 lg:hidden">
-          <span className="text-lg font-bold text-primary">LifePulse</span>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-clinical-alt">
+          <span className="text-lg font-bold text-primary dark:text-primary-300">LifePulse</span>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-clinical-alt dark:hover:bg-slate-700">
             <X size={20} />
           </button>
         </div>
@@ -84,8 +84,8 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-clinical-border">
-          <div className="flex items-center gap-2 text-xs text-text-muted">
+        <div className="p-4 border-t border-clinical-border dark:border-slate-700">
+          <div className="flex items-center gap-2 text-xs text-text-muted dark:text-slate-500">
             <div className="w-2 h-2 rounded-full bg-success" />
             System Online
           </div>
