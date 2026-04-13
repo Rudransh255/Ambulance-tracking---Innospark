@@ -22,6 +22,9 @@ export default function AmbulanceDashboard() {
     destination_hospital_id: '',
   });
 
+  const [sosAlert, setSosAlert] = useState(null);
+  const [acknowledgedSos, setAcknowledgedSos] = useState(null);
+
   useEffect(() => {
     loadData();
     const socket = getSocket();
@@ -30,6 +33,24 @@ export default function AmbulanceDashboard() {
         toast('New SOS emergency dispatched!', { icon: '🚨' });
         loadData();
       });
+
+      socket.on('sos:new_emergency', (data) => {
+        setSosAlert(data);
+        toast(`SOS! Patient ${data.patient_name} needs emergency pickup!`, { icon: '🚨', duration: 10000 });
+        loadData();
+      });
+
+      socket.on('sos:alert', (data) => {
+        setSosAlert(data);
+        toast(`SOS Alert! Ambulance ${data.ambulance_vehicle} dispatched for ${data.patient_name}`, { icon: '🚑', duration: 8000 });
+        loadData();
+      });
+
+      return () => {
+        socket.off('sos:dispatched');
+        socket.off('sos:new_emergency');
+        socket.off('sos:alert');
+      };
     }
   }, []);
 
@@ -96,6 +117,84 @@ export default function AmbulanceDashboard() {
         </div>
         {ambulance && <StatusBadge status={ambulance.status} />}
       </div>
+
+      {/* SOS Alert Banner */}
+      {sosAlert && (
+        <div className="bg-red-50 border-2 border-red-400 rounded-lg p-4 animate-pulse">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+              <AlertTriangle size={20} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-red-700">INCOMING SOS EMERGENCY</h3>
+              <p className="text-sm text-red-600">Immediate response required</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">Patient</p>
+              <p className="font-semibold">{sosAlert.patient_name}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">Condition</p>
+              <p className="font-semibold text-red-600">{sosAlert.emergency?.patient_condition || 'Emergency SOS'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">Severity</p>
+              <p className="font-semibold text-red-600 uppercase">{sosAlert.emergency?.severity || 'Critical'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">ETA</p>
+              <p className="font-semibold">{sosAlert.eta_minutes || 'N/A'} minutes</p>
+            </div>
+          </div>
+          <button
+            onClick={() => { setAcknowledgedSos(sosAlert); setSosAlert(null); }}
+            className="w-full px-4 py-2 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700"
+          >
+            Acknowledge
+          </button>
+        </div>
+      )}
+
+      {/* Acknowledged SOS - Patient Location */}
+      {acknowledgedSos && acknowledgedSos.pickup_lat && acknowledgedSos.pickup_lng && (
+        <div className="card border-l-4 border-l-red-500">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Navigation size={20} className="text-red-600" />
+              <h2 className="font-semibold text-red-700">Navigate to Patient - {acknowledgedSos.patient_name}</h2>
+            </div>
+            <button
+              onClick={() => setAcknowledgedSos(null)}
+              className="text-xs px-3 py-1 bg-gray-100 rounded-md hover:bg-gray-200 text-gray-600"
+            >
+              Dismiss
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">Condition</p>
+              <p className="font-semibold text-red-600">{acknowledgedSos.emergency?.patient_condition || 'Emergency SOS'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">Severity</p>
+              <p className="font-semibold text-red-600 uppercase">{acknowledgedSos.emergency?.severity || 'Critical'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase font-medium">ETA</p>
+              <p className="font-semibold">{acknowledgedSos.eta_minutes || 'N/A'} min</p>
+            </div>
+          </div>
+          <AmbulanceMap
+            ambulances={ambulance ? [ambulance] : []}
+            sosLocation={{ lat: acknowledgedSos.pickup_lat, lng: acknowledgedSos.pickup_lng }}
+            center={[acknowledgedSos.pickup_lat, acknowledgedSos.pickup_lng]}
+            zoom={14}
+            className="h-[300px]"
+          />
+        </div>
+      )}
 
       {/* Status Controls */}
       {ambulance && (

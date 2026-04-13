@@ -13,7 +13,23 @@
       "Bash(powershell -NoProfile -Command 'Get-ChildItem -Recurse '\\\\''C:\\\\Users\\\\Rudransh Singh\\\\Downloads\\\\CR'\\\\'' -Exclude node_modules,dist,.git | Where-Object { -not $_.PSIsContainer -and $_.FullName -notmatch '\\\\''node_modules|dist|\\\\.git|\\\\.claude'\\\\'' } | Sort-Object LastWriteTime -Descending | Select-Object -First 15 | ForEach-Object { $_.LastWriteTime.ToString\\('\\\\''HH:mm:ss'\\\\''\\) + '\\\\''  '\\\\'' + $_.FullName }')",
       "Bash(kill %1)",
       "Bash(node -e \"console.log\\('JWT_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\); console.log\\('JWT_REFRESH_SECRET=' + require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npm run:*)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3001)",
+      "Bash(findstr LISTENING)",
+      "Bash(taskkill /PID 44468 /F)",
+      "Bash(cmd /c \"taskkill /PID 44468 /F\")",
+      "Bash(cmd /c \"taskkill /PID 44468 /F 2>&1\")",
+      "Bash(powershell -Command \"Stop-Process -Id 44468 -Force\")",
+      "Bash(powershell -Command \"Get-Process node | Stop-Process -Force\")",
+      "Bash(findstr \":5173 \\\\|:3001 \")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(findstr \":5173\")",
+      "Bash(powershell -Command \"Get-Process -Id 32668 | Select-Object ProcessName, Id, Path\")",
+      "Bash(findstr \"LISTENING\")",
+      "Bash(findstr \":517\")",
+      "Bash(findstr \":517\\\\|:3001\")"
     ]
   }
 }

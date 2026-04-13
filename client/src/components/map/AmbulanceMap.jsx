@@ -82,7 +82,7 @@ export default function AmbulanceMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {ambulances.map((amb) => (
+      {ambulances.filter((amb) => (amb.lat || amb.current_lat) && (amb.lng || amb.current_lng)).map((amb) => (
         <Marker
           key={amb.id || amb.ambulanceId}
           position={[amb.lat || amb.current_lat, amb.lng || amb.current_lng]}
@@ -98,7 +98,7 @@ export default function AmbulanceMap({
         </Marker>
       ))}
 
-      {hospitals.map((h) => (
+      {hospitals.filter((h) => h.lat && h.lng).map((h) => (
         <Marker key={h.id} position={[h.lat, h.lng]} icon={hospitalIcon}>
           <Popup>
             <div className="text-sm">
@@ -115,7 +115,7 @@ export default function AmbulanceMap({
         </Marker>
       ))}
 
-      {sosLocation && (
+      {sosLocation && sosLocation.lat && sosLocation.lng && (
         <>
           <Marker position={[sosLocation.lat, sosLocation.lng]} icon={sosIcon}>
             <Popup><span className="text-sm font-semibold text-red-600">SOS Location</span></Popup>

@@ -15,6 +15,7 @@ export default function PatientDashboard() {
   const [activeEmergency, setActiveEmergency] = useState(null);
   const [showSosModal, setShowSosModal] = useState(false);
   const [sosLoading, setSosLoading] = useState(false);
+  const [sosStatus, setSosStatus] = useState('');
 
   useEffect(() => {
     loadData();
@@ -61,17 +62,18 @@ export default function PatientDashboard() {
 
   const handleSOS = async () => {
     setSosLoading(true);
+    setSosStatus('Sending SOS request...');
     try {
-      // Use simulated location (Delhi center)
       const lat = 28.6139 + (Math.random() - 0.5) * 0.05;
       const lng = 77.2090 + (Math.random() - 0.5) * 0.05;
 
       const result = await ambulanceAPI.sos({ lat, lng, medical_history: 'Emergency SOS' });
       setActiveEmergency(result);
       setShowSosModal(false);
-      toast.success(`Ambulance ${result.ambulance.vehicle_number} dispatched! ETA: ${result.eta_minutes} min`);
+      setSosStatus(`Ambulance ${result.ambulance.vehicle_number} dispatched! ETA: ${result.eta_minutes} min`);
     } catch (err) {
-      toast.error(err.message);
+      setSosStatus('ERROR: ' + (err.message || 'SOS request failed'));
+      setShowSosModal(false);
     } finally {
       setSosLoading(false);
     }
@@ -102,22 +104,39 @@ export default function PatientDashboard() {
         </button>
       </div>
 
+      {/* SOS Status */}
+      {sosStatus && (
+        <div className={`p-4 rounded-lg text-center font-semibold text-lg ${sosStatus.startsWith('ERROR') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          {sosStatus}
+        </div>
+      )}
+
       {/* Active Emergency Tracking */}
       {activeEmergency && (
-        <div className="card border-l-4 border-l-emergency">
-          <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+        <div className="card border-l-4 border-l-emergency bg-red-50">
+          <h2 className="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
             <AlertTriangle size={20} className="text-emergency" />
             Active Emergency - Ambulance En Route
           </h2>
-          <p className="text-sm text-text-secondary mb-3">
-            Ambulance {activeEmergency.ambulance?.vehicle_number} | ETA: {activeEmergency.eta_minutes} minutes
-          </p>
-          <AmbulanceMap
-            ambulances={[activeEmergency.ambulance]}
-            hospitals={hospitals}
-            sosLocation={{ lat: activeEmergency.emergency?.pickup_lat, lng: activeEmergency.emergency?.pickup_lng }}
-            className="h-[300px]"
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs text-text-muted uppercase font-medium">Ambulance</p>
+              <p className="text-sm font-semibold">{activeEmergency.ambulance?.vehicle_number}</p>
+            </div>
+            <div>
+              <p className="text-xs text-text-muted uppercase font-medium">ETA</p>
+              <p className="text-sm font-semibold">{activeEmergency.eta_minutes} minutes</p>
+            </div>
+            <div>
+              <p className="text-xs text-text-muted uppercase font-medium">Status</p>
+              <p className="text-sm font-semibold text-emergency">Dispatched</p>
+            </div>
+            <div>
+              <p className="text-xs text-text-muted uppercase font-medium">Emergency ID</p>
+              <p className="text-sm font-semibold">{activeEmergency.emergency?.id?.slice(0, 8)}...</p>
+            </div>
+          </div>
+          <p className="text-xs text-text-muted mt-3">Track the ambulance on the live map below.</p>
         </div>
       )}
 
@@ -184,23 +203,34 @@ export default function PatientDashboard() {
       </div>
 
       {/* SOS Confirmation Modal */}
-      <Modal isOpen={showSosModal} onClose={() => setShowSosModal(false)} title="Emergency SOS">
-        <div className="text-center">
-          <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <Phone size={32} className="text-emergency" />
-          </div>
-          <h3 className="text-lg font-semibold mb-2">Request Emergency Ambulance?</h3>
-          <p className="text-sm text-text-secondary mb-6">
-            The nearest available ambulance will be dispatched to your location immediately.
-          </p>
-          <div className="flex gap-3">
-            <button onClick={() => setShowSosModal(false)} className="btn-outline flex-1">Cancel</button>
-            <button onClick={handleSOS} disabled={sosLoading} className="btn-emergency flex-1">
-              {sosLoading ? 'Dispatching...' : 'Confirm SOS'}
-            </button>
+      {showSosModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 text-center">
+            <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+              <Phone size={32} className="text-red-600" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Request Emergency Ambulance?</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              The nearest available ambulance will be dispatched to your location immediately.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSosModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSOS}
+                disabled={sosLoading}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
+              >
+                {sosLoading ? 'Dispatching...' : 'Confirm SOS'}
+              </button>
+            </div>
           </div>
         </div>
-      </Modal>
+      )}
     </div>
   );
 }

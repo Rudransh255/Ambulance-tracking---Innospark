@@ -130,6 +130,12 @@ router.post('/sos', authMiddleware, (req, res) => {
   nearest.status = 'dispatched';
   nearest.updated_at = new Date().toISOString();
 
+  // Auto-reset ambulance to idle after 2 minutes (demo purposes)
+  setTimeout(() => {
+    nearest.status = 'idle';
+    nearest.updated_at = new Date().toISOString();
+  }, 2 * 60 * 1000);
+
   const emergency = {
     id: uuidv4(),
     patient_user_id: req.user.id,
@@ -154,6 +160,60 @@ router.post('/sos', authMiddleware, (req, res) => {
       ambulance: nearest,
       eta_minutes: Math.floor(minDist * 1000) + 3,
     });
+
+    // Notify the ambulance crew member
+    if (nearest.crew_user_id) {
+      io.to(`user_${nearest.crew_user_id}`).emit('sos:new_emergency', {
+        emergency,
+        patient_name: req.user.full_name,
+        pickup_lat: lat,
+        pickup_lng: lng,
+        eta_minutes: Math.floor(minDist * 1000) + 3,
+      });
+    }
+
+    // Also notify all ambulance crew role users
+    io.to('role_ambulance_crew').emit('sos:alert', {
+      emergency,
+      ambulance_vehicle: nearest.vehicle_number,
+      patient_name: req.user.full_name,
+      pickup_lat: lat,
+      pickup_lng: lng,
+    });
+
+    // Notify nearest hospital
+    let nearestHospital = hospitals[0];
+    let minHospDist = Infinity;
+    hospitals.forEach((h) => {
+      const dist = Math.sqrt(Math.pow(h.lat - lat, 2) + Math.pow(h.lng - lng, 2));
+      if (dist < minHospDist) {
+        minHospDist = dist;
+        nearestHospital = h;
+      }
+    });
+
+    if (nearestHospital) {
+      io.to(`hospital_${nearestHospital.id}`).emit('sos:hospital_alert', {
+        emergency,
+        ambulance_vehicle: nearest.vehicle_number,
+        patient_name: req.user.full_name,
+        pickup_lat: lat,
+        pickup_lng: lng,
+        eta_minutes: Math.floor(minDist * 1000) + 3,
+        hospital_name: nearestHospital.name,
+      });
+
+      // Also notify all hospital admins
+      io.to('role_hospital_admin').emit('sos:hospital_alert', {
+        emergency,
+        ambulance_vehicle: nearest.vehicle_number,
+        patient_name: req.user.full_name,
+        pickup_lat: lat,
+        pickup_lng: lng,
+        eta_minutes: Math.floor(minDist * 1000) + 3,
+        hospital_name: nearestHospital.name,
+      });
+    }
   }
 
   res.json({
